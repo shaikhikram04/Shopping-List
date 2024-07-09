@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_list/screens/groceries_items.dart';
+import 'package:shopping_list/screens/groceries_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color.fromARGB(255, 49, 58, 60),
       ),
-      home: const GroceriesItemsScreen(),
+      home: const GroceriesListScreen(),
     );
   }
 }
