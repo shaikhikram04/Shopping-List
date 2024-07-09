@@ -6,6 +6,11 @@ enum Categories {
   meat,
   dairy,
   carbs,
+  sweets,
+  spices,
+  convenience,
+  hygiene,
+  other,
 }
 
 class Category {
