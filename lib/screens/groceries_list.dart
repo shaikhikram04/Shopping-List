@@ -17,19 +17,19 @@ class GroceriesListScreen extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
-        itemCount: itemList.length,
-        itemBuilder: (BuildContext context, int index) => ListTile(
+        itemCount: groceryItems.length,
+        itemBuilder: (ctx, index) => ListTile(
           title: Text(
-            itemList[index].name,
-            style: Theme.of(context).textTheme.titleMedium,
+            groceryItems[index].name,
           ),
           leading: Container(
             width: 25,
             height: 25,
-            color: itemList[index].category.color,
+            color: groceryItems[index].category.color,
           ),
-          trailing: Text('${itemList[index].quantity}',
-              style: Theme.of(context).textTheme.titleMedium),
+          trailing: Text(
+            groceryItems[index].quantity.toString(),
+          ),
         ),
       ),
     );
