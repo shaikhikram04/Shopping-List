@@ -14,7 +14,7 @@ enum Categories {
 }
 
 class Category {
-  const Category(this.categoryType, this.color);
-  final String categoryType;
+  const Category(this.title, this.color);
+  final String title;
   final Color color;
 }
