@@ -33,6 +33,7 @@ class _GroceriesListScreenState extends State<GroceriesListScreen> {
         itemBuilder: (ctx, index) => ListTile(
           title: Text(
             groceryItems[index].name,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           leading: Container(
             width: 25,
@@ -41,6 +42,7 @@ class _GroceriesListScreenState extends State<GroceriesListScreen> {
           ),
           trailing: Text(
             groceryItems[index].quantity.toString(),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
       ),
