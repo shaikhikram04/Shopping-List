@@ -36,7 +36,6 @@ class _NewItemState extends State<NewItemScreen> {
         }),
       );
 
-      print(response.body);
       print(response.statusCode);
 
       if (!context.mounted) {
