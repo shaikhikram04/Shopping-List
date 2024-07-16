@@ -17,6 +17,7 @@ class GroceriesListScreen extends StatefulWidget {
 class _GroceriesListScreenState extends State<GroceriesListScreen> {
   List<GroceryItem> _groceryItems = [];
   var _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -29,6 +30,13 @@ class _GroceriesListScreenState extends State<GroceriesListScreen> {
         'flutter-prep-51b65-default-rtdb.firebaseio.com', 'shopping-list.json');
 
     final response = await http.get(url);
+
+    //* Having some error (400 or 500 series of code represent error)
+    if (response.statusCode >= 400) {
+      setState(() {
+        _error = 'Failed to fetch data. Please try again later.';
+      });
+    }
 
     final Map<String, dynamic> listData = json.decode(response.body);
 
@@ -65,6 +73,35 @@ class _GroceriesListScreenState extends State<GroceriesListScreen> {
     }
   }
 
+  void _removeItem(GroceryItem item) async {
+    final index = _groceryItems.indexOf(item);
+    setState(() {
+      _groceryItems.remove(item);
+    });
+
+    final url = Uri.https('flutter-prep-51b65-default-rtdb.firebaseio.com',
+        'shopping-list/${item.id}.json');
+
+    final response = await http.delete(url);
+
+    if (response.statusCode >= 400) {
+      setState(() {
+        if (context.mounted) {
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).clearSnackBars();
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Deletion Faield'),
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
+        _groceryItems.insert(index, item);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget content = const Center(child: Text('No items added yet.'));
@@ -78,23 +115,34 @@ class _GroceriesListScreenState extends State<GroceriesListScreen> {
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
         itemCount: _groceryItems.length,
-        itemBuilder: (ctx, index) => ListTile(
-          title: Text(
-            _groceryItems[index].name,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          leading: Container(
-            width: 25,
-            height: 25,
-            color: _groceryItems[index].category.color,
-          ),
-          trailing: Text(
-            _groceryItems[index].quantity.toString(),
-            style: Theme.of(context).textTheme.titleMedium,
+        itemBuilder: (ctx, index) => Dismissible(
+          onDismissed: (direction) {
+            _removeItem(_groceryItems[index]);
+          },
+          key: ValueKey(_groceryItems[index].id),
+          child: ListTile(
+            title: Text(
+              _groceryItems[index].name,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            leading: Container(
+              width: 25,
+              height: 25,
+              color: _groceryItems[index].category.color,
+            ),
+            trailing: Text(
+              _groceryItems[index].quantity.toString(),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
         ),
       );
     }
+
+    if (_error != null) {
+      content = Center(child: Text(_error!));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Groceries'),
