@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shopping_list/data/categories.dart';
-
 import 'package:shopping_list/models/grocery_item.dart';
 import 'package:shopping_list/screens/new_item.dart';
 
@@ -16,7 +15,7 @@ class GroceriesListScreen extends StatefulWidget {
 }
 
 class _GroceriesListScreenState extends State<GroceriesListScreen> {
-  final List<GroceryItem> _groceryItems = [];
+  List<GroceryItem> _groceryItems = [];
   late Future<List<GroceryItem>> _loadedItems;
 
   @override
@@ -57,6 +56,7 @@ class _GroceriesListScreenState extends State<GroceriesListScreen> {
         ),
       );
     }
+    _groceryItems = loadedItem;
     return loadedItem;
   }
 
@@ -129,24 +129,24 @@ class _GroceriesListScreenState extends State<GroceriesListScreen> {
           }
 
           return ListView.builder(
-            itemCount: snapshot.data!.length,
+            itemCount: _groceryItems.length,
             itemBuilder: (ctx, index) => Dismissible(
               onDismissed: (direction) {
-                _removeItem(snapshot.data![index]);
+                _removeItem(_groceryItems[index]);
               },
-              key: ValueKey(snapshot.data![index].id),
+              key: ValueKey(_groceryItems[index].id),
               child: ListTile(
                 title: Text(
-                  snapshot.data![index].name,
+                  _groceryItems[index].name,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 leading: Container(
                   width: 25,
                   height: 25,
-                  color: snapshot.data![index].category.color,
+                  color: _groceryItems[index].category.color,
                 ),
                 trailing: Text(
-                  snapshot.data![index].quantity.toString(),
+                  _groceryItems[index].quantity.toString(),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
